@@ -1,23 +1,33 @@
-import logo from './logo.svg';
 import './App.css';
+import Alert from './components/Alert';
+import GenerateImage from './components/GenerateImage';
+import Navbar from './components/Navbar';
+import { useState } from 'react';
 
-function App() {
+const App = () => {
+
+  const [apiKey, setApiKey] = useState("");
+
+  const getApiKey = (apiKey) => {
+      setApiKey(apiKey);
+  }
+
+  const [alert, setAlert] = useState({isSet: false, message: null});
+
+  const showAlert = (isSet, message) => {
+    setAlert({isSet: isSet, message: message});
+
+    setTimeout(() => {
+      setAlert({isSet: false, message: null});
+    }, 8000)
+    
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Navbar getApiKey={getApiKey}/>
+      <Alert alert={alert}/>
+      <GenerateImage apiKey={apiKey} showAlert={showAlert}/>
     </div>
   );
 }
