@@ -6,7 +6,7 @@ const Alert = (props) => {
             {props.alert.isSet &&
                 <div className="alert alert-warning alert-dismissible fade show" role="alert"
                     style={{
-                        position: "absolute",
+                        position: "fixed",
                         width: "100%",
                         marginTop: "-63px",
                         textAlign: "center",
