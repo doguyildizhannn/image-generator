@@ -111,7 +111,15 @@ const ImageVariation = (props) => {
         <div className='container'>
             <img src={ghostImage} alt="..." id="ghostimage" hidden></img>
             <ImageComponent image={uploadedImage} size={uploadedImageSize} loading={uploadedImageLoading} />
-            <div className="d-flex justify-content-center" style={{ marginTop: "5px" }}>
+            <div className="mx-auto d-block my-5" style={{
+                    padding: "7px",
+                    textAlign: "justify",
+                    width: "300px",
+                    borderStyle: "solid",
+                    borderWidth: "0.3px",
+                    borderRadius: "4px",
+                    backgroundColor: "#fff8d0"
+                }}>
                 <label><small><b><code>&#9432;</code></b><small><b> Upload a square image PNG file which is less than 4MB.</b></small></small></label>
             </div>
             <div className='container my-3'>

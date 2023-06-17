@@ -15,12 +15,11 @@ const MaskImage = (props) => {
     const [uploadedImage, setUploadedImage] = useState(null);
     const [uploadedImageSize, setUploadedImageSize] = useState(size256);
     const [ghostImage, setGhostImage] = useState(null);
-    // eslint-disable-next-line
     const [uploadedImageFile, setUploadedImageFile] = useState(null);
-    // eslint-disable-next-line
     const [uploadedImageLoading, setUploadedImageLoading] = useState(false);
     const [text, setText] = useState("");
     const [isCanvas, setIsCanvas] = useState(true);
+    const [brushSize, setBrushSize] = useState(10);
 
     const changeDisabilityOfAllButtons = (value) => {
         document.getElementById("size1").disabled = value;
@@ -98,7 +97,9 @@ const MaskImage = (props) => {
     }
 
     useEffect(() => {
-        setUploadedImageSize(firstSize.current + 'x' + firstSize.current);
+        if (uploadedImageSize === "255x255" || uploadedImageSize === "511x511" || uploadedImageSize === "1023x1023") {
+            setUploadedImageSize(firstSize.current + 'x' + firstSize.current);
+        }
     }, [uploadedImageSize])
 
     useEffect(() => {
@@ -126,8 +127,8 @@ const MaskImage = (props) => {
             setUploadedImageLoading(true);
             setUploadedImage(null);
             setIsCanvas(false);
-            setUploadedImageSize(size);
             changeDisabilityOfAllButtons(true);
+            setUploadedImageSize(size);
 
             const formData = new FormData();
             formData.append('image', uploadedImageFile);
@@ -168,11 +169,24 @@ const MaskImage = (props) => {
         else { props.showAlert(true, alertMessage) }
     }
 
+    const brushSizeChanged = (e) => {
+        setBrushSize(e.target.value);
+    }
+
     return (
         <div className='container'>
             <img src={ghostImage} alt="..." id="ghostimage" hidden></img>
-            <ImageComponent image={uploadedImage} size={uploadedImageSize} loading={uploadedImageLoading} isCanvas={isCanvas} />
-            <div className="d-flex justify-content-center" style={{ marginTop: "5px", paddingLeft: "50px", paddingRight: "50px" }}>
+            <ImageComponent image={uploadedImage} size={uploadedImageSize} loading={uploadedImageLoading} isCanvas={isCanvas} brushSize={brushSize} />
+            <div className="mx-auto d-block my-5"
+                style={{
+                    padding: "7px",
+                    textAlign: "justify",
+                    width: "300px",
+                    borderStyle: "solid",
+                    borderWidth: "0.3px",
+                    borderRadius: "4px",
+                    backgroundColor: "#fff8d0"
+                }}>
                 <label><small><b><code>&#9432;</code></b><small><b> Upload a square image PNG file which is less than 4MB.
                     After that edit the areas that you would like to apply mask.
                     And finally choose a size and enter a description about what would you like to see as whole.</b></small></small></label>
@@ -191,7 +205,22 @@ const MaskImage = (props) => {
                         <input type="file" id="uploadpng" onChange={uploadPNG} />
                         Upload
                     </label>
-                    <button className="btn btn-dark me-md-2" id="clearmask" type="button" onClick={clearMaskedAreas}>Clear Mask</button>
+                    <button className="btn btn-dark me-md" id="clearmask" type="button" onClick={clearMaskedAreas}>Clear Mask</button>
+                </div>
+            </div>
+            <div className='container my-3'>
+                <div className="d-grid gap-2 d-md-flex" style={{ justifyContent: "center" }}>
+                    <label style={{
+                        display: "inline-block",
+                        paddingTop: "6px"
+                    }} >Brush Size</label>
+                </div>
+                <div className="d-grid gap-2 d-md-flex" style={{ justifyContent: "center" }}>
+                    <input type="range" className="form-range" id="brushsizerange" onChange={brushSizeChanged}
+                        style={{
+                            width: "200px",
+                            paddingTop: "12px"
+                        }} min="1" max="100" value={brushSize}></input>
                 </div>
             </div>
             <div className='container my-5'>
@@ -201,8 +230,11 @@ const MaskImage = (props) => {
                     <button className="btn btn-dark" id="size3" type="button" onClick={() => setSizeAndButtons(size1024)}>1024x1024</button>
                 </div>
             </div>
-            <div className='container my-5' style={{ paddingLeft: "50px", paddingRight: "50px" }}>
-                <textarea className="form-control" id="descText" placeholder="Describe the image that you would like to generate." onChange={textChanged} style={{ height: "100px" }}></textarea>
+            <div className='container my-5'
+                style={{
+                    width: "350px",
+                }}>
+                <textarea className="form-control" id="descText" placeholder="Describe the image." onChange={textChanged} style={{ height: "100px" }}></textarea>
             </div>
             <div className='container my-5'>
                 <div className="d-grid gap-2 d-md-flex" style={{ justifyContent: "center" }}>

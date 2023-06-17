@@ -5,6 +5,7 @@ const ImageComponent = (props) => {
     const pureSize = props.size.slice(0, 4).replace(/x/g, '');
     const pureSizeInt = parseInt(pureSize, 10);
     const spinnerSize = pureSize === "256" ? "2rem" : pureSize === "512" ? "4rem" : pureSize === "1024" ? "6rem" : "2rem";
+    const brushSize = useRef(props.brushSize);
 
     let dots = "";
 
@@ -32,6 +33,7 @@ const ImageComponent = (props) => {
         if (props.isCanvas) {
             let canvas = document.getElementById("myCanvas");
             let ctx = canvas.getContext("2d");
+
             const image = new Image();
             image.src = props.image;
             image.onload = () => {
@@ -50,10 +52,14 @@ const ImageComponent = (props) => {
         // eslint-disable-next-line
     }, [props.isCanvas, props.image]);
 
+    useEffect(() => {
+        brushSize.current = props.brushSize;
+    }, [props.brushSize]);
+
     const setPosition = (e) => {
         let canvas = document.getElementById("myCanvas");
-        XYvalues.current.x = e.clientX - canvas.offsetLeft;
-        XYvalues.current.y = e.clientY - canvas.offsetTop + document.documentElement.scrollTop;
+        XYvalues.current.x = e.clientX - canvas.offsetLeft - 10;
+        XYvalues.current.y = e.clientY - canvas.offsetTop + document.documentElement.scrollTop - 10;
         canvas.style.cursor = "crosshair";
     }
 
@@ -62,7 +68,7 @@ const ImageComponent = (props) => {
         let canvas = document.getElementById("myCanvas");
         let ctx = canvas.getContext("2d");
         ctx.beginPath();
-        ctx.lineWidth = 35;
+        ctx.lineWidth = brushSize.current;
         ctx.lineCap = 'round';
         ctx.strokeStyle = '#000000';
         ctx.moveTo(XYvalues.current.x, XYvalues.current.y);
@@ -76,8 +82,8 @@ const ImageComponent = (props) => {
         let canvas = document.getElementById('myCanvas');
         evt.preventDefault();
         const touches = evt.changedTouches;
-        XYvalues.current.x = canvas.getBoundingClientRect().left;
-        XYvalues.current.y = canvas.getBoundingClientRect().top;
+        XYvalues.current.x = canvas.getBoundingClientRect().left + 10;
+        XYvalues.current.y = canvas.getBoundingClientRect().top + 10;
         for (let i = 0; i < touches.length; i++) {
             ongoingTouches.current.push(copyTouch(touches[i]));
         }
@@ -94,7 +100,7 @@ const ImageComponent = (props) => {
                 context.beginPath();
                 context.moveTo(ongoingTouches.current[idx].clientX - XYvalues.current.x, ongoingTouches.current[idx].clientY - XYvalues.current.y);
                 context.lineTo(touches[i].clientX - XYvalues.current.x, touches[i].clientY - XYvalues.current.y);
-                context.lineWidth = 35;
+                context.lineWidth = brushSize.current;
                 context.strokeStyle = '#000000';
                 context.lineJoin = "round";
                 context.closePath();
@@ -113,7 +119,7 @@ const ImageComponent = (props) => {
         for (let i = 0; i < touches.length; i++) {
             let idx = ongoingTouchIndexById(touches[i].identifier);
             if (idx >= 0) {
-                context.lineWidth = 35;
+                context.lineWidth = brushSize.current;
                 context.fillStyle = '#000000';
                 ongoingTouches.current.splice(idx, 1);  // remove it; we're done
             }
@@ -147,11 +153,11 @@ const ImageComponent = (props) => {
         <div className='container' style={{ marginTop: "124px" }}>
             {
                 props.isCanvas ?
-                    <canvas className="mx-auto d-block" id="myCanvas" width={pureSize} height={pureSize} style={{ backgroundColor: "#919191" }}>
+                    <canvas className="mx-auto d-block" id="myCanvas" width={pureSize} height={pureSize} style={{ backgroundColor: "#919191", borderStyle: "solid", borderWidth: "10px", borderRadius: "4px", borderColor: "#212529" }}>
                     </canvas>
                     :
                     props.loading && props.image === null ?
-                        <div className="mx-auto d-block" style={{ backgroundColor: "#919191", width: `${pureSize}px`, height: `${pureSize}px` }}>
+                        <div className="mx-auto d-block" style={{ backgroundColor: "#919191", width: `${pureSize}px`, height: `${pureSize}px`, borderStyle: "solid", borderWidth: "10px", borderRadius: "4px", borderColor: "#212529", boxSizing: "content-box" }}>
                             <div className="row" style={{ height: pureSizeInt / 7 }}>
                             </div>
                             <div className="row" style={{ height: pureSizeInt / 7 }}>
@@ -177,11 +183,11 @@ const ImageComponent = (props) => {
                         </div>
                         :
                         !props.loading && props.image !== null ?
-                            <div className="mx-auto d-block" style={{ backgroundColor: "#919191", width: `${pureSize}px`, height: `${pureSize}px` }}>
+                            <div className="mx-auto d-block" style={{ backgroundColor: "#919191", width: `${pureSize}px`, height: `${pureSize}px`, borderStyle: "solid", borderWidth: "10px", borderRadius: "4px", borderColor: "#212529", boxSizing: "content-box" }}>
                                 <img src={props.image} className="mx-auto d-block" alt="..." />
                             </div>
                             :
-                            <div className="mx-auto d-block" style={{ backgroundColor: "#919191", width: `${pureSize}px`, height: `${pureSize}px` }}>
+                            <div className="mx-auto d-block" style={{ backgroundColor: "#919191", width: `${pureSize}px`, height: `${pureSize}px`, borderStyle: "solid", borderWidth: "10px", borderRadius: "4px", borderColor: "#212529", boxSizing: "content-box" }}>
                             </div>
             }
         </div>

@@ -85,8 +85,8 @@ const GenerateImage = (props) => {
                     <button className="btn btn-dark" id="size3" type="button" onClick={() => setSizeAndImage(size1024)}>1024x1024</button>
                 </div>
             </div>
-            <div className='container my-5' style={{ paddingLeft: "50px", paddingRight: "50px" }}>
-                <textarea className="form-control" placeholder="Describe the image that you would like to generate." onChange={textChanged} style={{ height: "100px" }}></textarea>
+            <div className='container my-5' style={{ width: "350px"}}>
+                <textarea className="form-control" placeholder="Describe the image." onChange={textChanged} style={{ height: "100px" }}></textarea>
             </div>
             <div className='container my-5'>
                 <div className="d-grid gap-2 d-md-flex" style={{ justifyContent: "center" }}>
